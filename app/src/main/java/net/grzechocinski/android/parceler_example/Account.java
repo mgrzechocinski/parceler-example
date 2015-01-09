@@ -11,7 +11,7 @@ public class Account {
     @Transient
     Owner owner;
 
-    private Long uniqueKey;
+    private Long uniqueKey = 1L;
 
     @Override
     public String toString() {

@@ -12,14 +12,28 @@ public class AccountConverter implements ParcelConverter<Account> {
 
     @Override
     public void toParcel(Account input, Parcel parcel) {
-        parcel.writeParcelable(Parcels.wrap(input), 0);
+        parcel.writeParcelable(Parcels.wrap(new AccountParcelableWrapper(input)), 0);
         parents.put(input.getUniqueKey(), input.getOwner());
     }
 
     @Override
     public Account fromParcel(Parcel parcel) {
-        Account account = Parcels.unwrap(parcel.readParcelable(getClass().getClassLoader()));
+        AccountParcelableWrapper account = Parcels.unwrap(parcel.readParcelable(getClass().getClassLoader()));
         account.setOwner(parents.get(account.getUniqueKey()));
         return account;
+    }
+
+    //Override annotation from super class - we don't need converter anymore
+    @org.parceler.Parcel
+    public static class AccountParcelableWrapper extends Account{
+
+        public AccountParcelableWrapper() {
+        }
+
+        //Deep copy
+        public AccountParcelableWrapper(Account account) {
+            this.number = account.getNumber();
+            this.owner = account.getOwner();
+        }
     }
 }
